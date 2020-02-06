@@ -33,10 +33,10 @@ then
 fi
 
 ## define desired permissions (its better to use human nomenclature, like g+rw)
-permissions="770"
+dir_permissions="2770"
 
 ## count the number of dirs without the expected permissions
-number_of_dirs=$(find $target_dir -mindepth 1 ! -perm $permissions -type d | wc -l)
+number_of_dirs=$(find $target_dir -mindepth 1 ! -perm $dir_permissions -type d | wc -l)
 echo "[$time_stamp] found dirs without the correct permissions: $number_of_dirs" | gzip >> $logfile
 
 ## test if there are dirs in need of chmodding
@@ -44,15 +44,18 @@ if [[ "$number_of_dirs" -eq 0 ]]
 then
 	echo "[$time_stamp] No dirs need chmodding. Skipping change of permissions for directories" | gzip >> $logfile
 else
-	echo -e "[$time_stamp] detecting dirs in $target_dir NOT set to the following permissions: $permissions\n=" | gzip >> $logfile
+	echo -e "[$time_stamp] detecting dirs in $target_dir NOT set to the following permissions: $dir_permissions\n=" | gzip >> $logfile
 	## find every dir without the required permissions
-	find $target_dir -mindepth 1 ! -perm $permissions -type d | gzip >> $logfile
+	find $target_dir -mindepth 1 ! -perm $dir_permissions -type d | gzip >> $logfile
 	echo -e "=\n[$time_stamp] modifying permissions on said dirs" | gzip >> $logfile
 	## modify permissions in the dirs found
-	find $target_dir -mindepth 1 ! -perm $permissions -type d -exec chmod $permissions {} \;
+	find $target_dir -mindepth 1 ! -perm $dir_permissions -type d -exec chmod $dir_permissions {} \;
 	## message of change
-	echo "[$time_stamp] DETECTED dirs PERMISSIONS HAVE BEEN SET TO: $permissions" | gzip >> $logfile
+	echo "[$time_stamp] DETECTED dirs PERMISSIONS HAVE BEEN SET TO: $dir_permissions" | gzip >> $logfile
 fi
+
+## define desired permissions (its better to use human nomenclature, like g+rw)
+permissions="770"
 
 ## count the number of files without the expected permissions
 number_of_files=$(find $target_dir ! -perm $permissions -type f | wc -l)
