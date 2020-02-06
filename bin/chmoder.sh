@@ -15,15 +15,14 @@ mkdir -p $(dirname "$logfile")
 ## touch the timestamp of the logfile
 # if the files does not exist, it is created
 touch "$logfile"
+## define time stamp
+time_stamp=$(date | tr " " "_")
 
 ##end message
-echo "= START OF CRONJOB" | gzip >> $logfile
+echo "= START OF CRONJOB at $time_stamp" | gzip >> $logfile
 
 ## capture the target directory
 target_dir="$1"
-
-## define time stamp
-time_stamp=$(date | tr " " "_")
 
 ## Check, if target dir does NOT exist, the scripts ends abruptly
 if [[ ! -d "$target_dir" ]]
@@ -77,4 +76,4 @@ else
 fi
 
 ##end message
-echo "= END OF CRONJOB" | gzip >> $logfile
+echo "= END OF CRONJOB at $(date | tr ' ' '_')" | gzip >> $logfile
